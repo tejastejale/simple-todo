@@ -1,15 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { images } from "../Assets/Images/Images";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+
 function Login() {
   const [username, setUsername] = useState("");
-  const [usernamestate, setUsernamestate] = useState(false);
   const [password, setPassword] = useState("");
-  const [passwordstate, setPasswordstate] = useState(false);
-  const [error, setError] = useState(false);
-  const [inputerror, setInputError] = useState(false);
+  const [error, setError] = useState({
+    usernameError: false,
+    passwordError: false,
+    passwordLen: false,
+    inputError: false,
+  });
+
   const navigate = useNavigate();
+
   const data = [
     {
       username: "admin",
@@ -17,41 +22,48 @@ function Login() {
     },
   ];
 
-  function handleSubmit(event) {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    if (password.length <= 5) setError(true);
-    else {
-      for (let i = 0; i <= data.length - 1; i++) {
-        if (data[i].username === username && data[i].password === password) {
-          navigate("/main");
-          localStorage.setItem("username", username);
-          localStorage.setItem("password", password);
-        } else {
-          console.log("incorrect inputs");
-          if (data[i].username !== username && data[i].password !== password) {
-            setPasswordstate(true);
-            setUsernamestate(true);
-          }
-          if (data[i].username === username) {
-            setPasswordstate(true);
-            setInputError(true);
-          }
-          if (data[i].password === password) {
-            setUsernamestate(true);
-            setInputError(true);
-          }
-        }
-      }
+
+    if (password.length <= 5) {
+      setError((prevError) => ({
+        ...prevError,
+        passwordLen: true,
+        passwordError: false,
+        inputError: false,
+      }));
+      return;
     }
-  }
+
+    const user = data.find(
+      (user) => user.username === username && user.password === password
+    );
+
+    if (user) {
+      navigate("/main");
+      localStorage.setItem("username", username);
+      localStorage.setItem("password", password);
+    } else {
+      const isUsernameValid = data.some((user) => user.username === username);
+      const isPasswordValid = data.some((user) => user.password === password);
+
+      setError({
+        usernameError: !isUsernameValid,
+        passwordError: !isPasswordValid,
+        passwordLen: false,
+        inputError: true,
+      });
+    }
+  };
 
   const style = {
     background: "cover",
     backgroundRepeat: "no-repeat",
     backgroundImage: `url(${images[0]["blue-background2"]})`,
   };
+
   return (
-    <motion.div className="w-screen h-screen" style={style} init>
+    <motion.div className="w-screen h-screen" style={style}>
       <div className="flex justify-center items-center w-full h-full">
         <AnimatePresence>
           <motion.form
@@ -66,39 +78,58 @@ function Login() {
             <p className="text-3xl text-center text-white">Login</p>
             <div className="w-full h-full flex flex-col justify-center gap-5">
               <div className="flex flex-col gap-1">
-                <p className="text-white">Username</p>
+                <label htmlFor="username" className="text-white">
+                  Username
+                </label>
                 <input
+                  id="username"
                   type="text"
-                  className={`border rounded p-2 focus:outline-0  bg-transparent text-white ${
-                    usernamestate ? "border-red-500" : ""
+                  className={`border rounded p-2 focus:outline-0 bg-transparent text-white ${
+                    error.usernameError ? "border-red-500" : ""
                   }`}
                   required
                   onChange={(e) => {
                     setUsername(e.target.value);
+                    setError((prevError) => ({
+                      ...prevError,
+                      usernameError: false,
+                      inputError: false,
+                    }));
                   }}
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <p className="text-white">Password</p>
+                <label htmlFor="password" className="text-white">
+                  Password
+                </label>
                 <input
+                  id="password"
                   type="password"
-                  className={`border rounded p-2 focus:outline-0  bg-transparent text-white ${
-                    passwordstate ? "border-red-500" : ""
+                  className={`border rounded p-2 focus:outline-0 bg-transparent text-white ${
+                    error.passwordError || error.passwordLen
+                      ? "border-red-500"
+                      : ""
                   }`}
                   required
                   onChange={(e) => {
                     setPassword(e.target.value);
+                    setError((prevError) => ({
+                      ...prevError,
+                      passwordError: false,
+                      passwordLen: false,
+                      inputError: false,
+                    }));
                   }}
                 />
               </div>
-              {error && (
+              {error.passwordLen && (
                 <p className="text-sm text-red-500 text-center">
-                  Password should not be less than 5 characters !
+                  Password should not be less than 5 characters!
                 </p>
               )}
-              {inputerror && (
+              {error.inputError && (
                 <p className="text-sm text-red-500 text-center">
-                  Provide Correct Inputs !
+                  Provide Correct Inputs!
                 </p>
               )}
             </div>

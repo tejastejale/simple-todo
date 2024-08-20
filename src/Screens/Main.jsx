@@ -6,12 +6,6 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 function Main() {
-  // useEffect(() => {
-  //   let username = localStorage.getItem("username");
-  //   let password = localStorage.getItem("password");
-  //   const navigate = useNavigate();
-  //   if (username == null || password == null) navigate("/");
-  // }, []);
   const navigate = useNavigate();
   const [data, setData] = useState(["one", "two", "three"]);
   const [newvalue, setNewvalue] = useState("");
@@ -40,10 +34,9 @@ function Main() {
 
   const addvalue = (value) => {
     if (!data.includes(value)) {
-      let temp = [...data];
-      temp.push(value);
+      let temp = [value, ...data];
       setData(temp);
-      setStrikes([...strikes, false]);
+      setStrikes([false, ...strikes]);
     } else {
       alert("This value already exists.");
     }
@@ -105,9 +98,16 @@ function Main() {
               />
             </button>
           </form>
-          <div className="h-full w-full overflow-auto gap-5 flex flex-col-reverse items-end justify-end ">
+          <motion.div className="h-full w-full overflow-auto gap-5 flex flex-col items-center justify-start ">
             {data?.map((item, index) => (
-              <div
+              <motion.div
+                initial={{ y: -100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{
+                  ease: "easeInOut",
+                  duration: 0.5,
+                  delay: index * 0.3,
+                }}
                 key={item}
                 className="h-fit w-full flex flex-col gap-2 justify-start shadow"
               >
@@ -157,9 +157,9 @@ function Main() {
                     <FaTrashAlt className="text-xl text-white" />
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>
