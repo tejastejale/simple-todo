@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { images } from "../Assets/Images/Images";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-
+import ButtonComponent from "../Components/Button";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -133,9 +133,14 @@ function Login() {
                 </p>
               )}
             </div>
-            <button className="bg-white p-2 rounded-md" type="submit">
+
+            <ButtonComponent
+              className="bg-white p-2 rounded-md"
+              type="submit"
+              // childeren={"Let's Go"}
+            >
               Let's Go
-            </button>
+            </ButtonComponent>
           </motion.form>
         </AnimatePresence>
       </div>

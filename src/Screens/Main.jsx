@@ -26,8 +26,8 @@ function Main() {
       .get("http://localhost:3000/posts")
       .then((response) => {
         setApidata(response.data);
-        setData(response.data.map((item) => item.title)); // Initialize local state with API data
-        setStrikes(response.data.map(() => false)); // Initialize strikes with API data
+        setData(response.data.map((item) => item.title));
+        setStrikes(response.data.map(() => false));
         setIsloading(false);
       })
       .catch((err) => {
@@ -61,17 +61,17 @@ function Main() {
     get();
   }
 
-  function loading() {
-    return (
-      <div className="w-full h-40 flex text-center items-center">
-        <p className="text-5xl font-bold">Loading...</p>
-        {console.log("loading")}
-      </div>
-    );
-  }
-
   async function handlenewvalue(e) {
     e.preventDefault();
+    if (data.includes(newvalue)) {
+      const index = data.indexOf(newvalue);
+      alert("This value already exists.");
+
+      setIsEditing(index);
+      setEditValue(newvalue);
+      setNewvalue("");
+      return;
+    }
     await post(newvalue);
     setNewvalue("");
   }
@@ -82,7 +82,7 @@ function Main() {
   };
 
   const handleremove = (index) => {
-    let itemId = apidata[index].id; // Get the ID from API data
+    let itemId = apidata[index].id;
     let tempData = [...data];
     let tempStrikes = [...strikes];
     tempData.splice(index, 1);
@@ -98,16 +98,13 @@ function Main() {
   };
 
   const handleSaveEdit = async (index) => {
-    const itemId = apidata[index].id; // Get the ID from API data
+    const itemId = apidata[index].id;
 
     if (!data.includes(editValue) || editValue === data[index]) {
-      // Update local state
       let temp = [...data];
       temp[index] = editValue;
       setData(temp);
       setIsEditing(null);
-
-      // Update server
       await patch(itemId, editValue);
     } else {
       alert("This value already exists.");
@@ -155,7 +152,7 @@ function Main() {
             </button>
           </form>
           {isloading ? (
-            <div className="w-full h-40 text-center flex items-center text-white text-xl bg-white">
+            <div className="w-full h-20 text-center rounded-md  flex items-center text-black justify-center text-xl bg-white">
               <p className="text-center">loading....</p>
             </div>
           ) : (
