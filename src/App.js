@@ -3,6 +3,9 @@ import "./App.css";
 import React, { useEffect } from "react";
 import Login from "./Screens/Login";
 import Main from "./Screens/Main";
+import { DataContext } from "./Store/Context";
+import Reducer from "./Context/Reducer";
+import Sort from "./Context/Second";
 
 function App() {
   const navigate = useNavigate();
@@ -18,6 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/main" element={<Main />} />
+        <Route path="/practice" element={<Sort />} />
       </Routes>
     </div>
   );

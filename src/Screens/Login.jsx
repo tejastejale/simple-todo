@@ -24,7 +24,6 @@ function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     if (password.length <= 5) {
       setError((prevError) => ({
         ...prevError,
