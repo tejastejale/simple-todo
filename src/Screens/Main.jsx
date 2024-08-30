@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import axios from "axios";
+import ButtonComponent from "../Components/Button";
 
 function Main() {
   const navigate = useNavigate();
@@ -137,7 +138,7 @@ function Main() {
         backgroundImage: `url(${images[0]["blue-background2"]})`,
       }}
     >
-      {createPortal(
+      {/* {createPortal(
         <button
           onClick={handlelogout}
           className="absolute top-5 right-5 p-2 bg-gradient-to-br from-red-400 to-red-500 rounded text-white"
@@ -145,7 +146,13 @@ function Main() {
           Logout
         </button>,
         document.getElementById("btn")
-      )}
+      )} */}
+      <ButtonComponent
+        onClick={handlelogout}
+        className="absolute z-50 top-5 right-5 p-2 cursor-pointer bg-gradient-to-br from-red-400 to-red-500 rounded text-white"
+      >
+        Logout
+      </ButtonComponent>
 
       <div className="flex justify-center items-center w-full h-full md:scale-100 scale-75">
         <div className="w-[500px] h-[700px] shadow-xl rounded-md flex flex-col gap-5 bg-gradient-to-r from-cyan-500 to-blue-500 p-8 text-white">
