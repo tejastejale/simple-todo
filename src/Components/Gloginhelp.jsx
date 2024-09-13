@@ -1,53 +1,41 @@
-// src/hooks/useGoogleSignIn.js
-import { useEffect } from "react";
+import { Button } from "@mui/material";
+import { useGoogleLogin } from "@react-oauth/google";
+import React, { useEffect, useState } from "react";
+import { FaGoogle } from "react-icons/fa";
 
-const useGoogleSignIn = (clientId, onSuccess, onError) => {
+function Gloginhelp() {
+  const [loginData, setLoginData] = useState();
   useEffect(() => {
-    const loadGapiScript = () => {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement("script");
-        script.src = "https://apis.google.com/js/platform.js";
-        script.async = true;
-        script.defer = true;
-        script.onload = () => resolve();
-        script.onerror = () =>
-          reject(new Error("Failed to load Google API script"));
-        document.body.appendChild(script);
-      });
-    };
+    console.log(loginData);
+  }, [loginData]);
+  const login = useGoogleLogin({
+    onSuccess: (e) => {
+      // console.log(e);
+      fetchDetails(e.scope, e.access_token, e.token_type);
+    },
+    // onSuccess: (e) => console.log(e),
+    onError: (e) => console.log(e),
+  });
+  const fetchDetails = async (url, token, token_type) => {
+    const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+      headers: {
+        Authorization: `${token_type} ${token}`,
+      },
+    });
+    const data = await res.json();
+    setLoginData(data);
+  };
+  return (
+    <div>
+      <button
+        className="w-full bg-white p-2 rounded flex items-center align-middle justify-center gap-2"
+        onClick={login}
+      >
+        <FaGoogle className="text-md " />
+        <p className="mt-1">Login</p>
+      </button>
+    </div>
+  );
+}
 
-    const initializeGoogleSignIn = async () => {
-      try {
-        await loadGapiScript();
-        /* global gapi */
-        gapi.load("auth2", () => {
-          gapi.auth2
-            .init({
-              client_id: clientId,
-              scope: "profile email", // Specify the scopes here
-            })
-            .then(() => {
-              const auth2 = gapi.auth2.getAuthInstance();
-              const signInButton = document.getElementById(
-                "google-signin-button"
-              );
-              if (signInButton) {
-                auth2.attachClickHandler(signInButton, {}, onSuccess, onError);
-              } else {
-                console.error("Google Sign-In button not found");
-              }
-            })
-            .catch((error) =>
-              console.error("Error initializing Google Auth:", error)
-            );
-        });
-      } catch (error) {
-        console.error("Error loading Google API script:", error);
-      }
-    };
-
-    initializeGoogleSignIn();
-  }, [clientId, onSuccess, onError]);
-};
-
-export default useGoogleSignIn;
+export default Gloginhelp;

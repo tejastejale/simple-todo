@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import ButtonComponent from "../Components/Button";
 import GLogin from "./Glogin";
+import Gloginhelp from "../Components/Gloginhelp";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -134,7 +135,8 @@ function Login() {
                 </p>
               )}
             </div>
-            <GLogin />
+            {/* <GLogin /> */}
+            <Gloginhelp />
             <ButtonComponent className="bg-white p-2 rounded-md" type="submit">
               Let's Go
             </ButtonComponent>
